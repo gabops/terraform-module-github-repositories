@@ -1,0 +1,77 @@
+version: ">= 0.13.0, < 1.1.0"
+
+formatter: "markdown table"
+
+header-from: main.tf
+footer-from: ""
+
+sections:
+  #hide: []
+  show:
+    - data-sources
+    - header
+    - footer
+    - inputs
+    - modules
+    - outputs
+    - providers
+    - requirements
+    - resources
+
+content: |-
+  {{ .Header }}
+
+  {{ .Providers }}
+
+  {{ .Resources }}
+
+  {{ .Modules }}
+
+  {{ .Inputs }}
+
+  {{ .Outputs }}
+
+  {{ .Requirements }}
+
+  ## Values
+
+  Configuration passed to modules and resources is declared in the file [values.tfvars](./values.tfvars). This file
+  **must be** treated as the source of truth for the configuration of the infrastructure. Configuration values **must not**
+  be declared anywhere else other than in this file!
+
+  ## Development
+
+  - This project uses [Semantic Versioning](https://semver.org/).
+  - After cloning this repo and moving into it, you must run `make hook` in order to install the git hooks.
+
+  ## Examples
+
+  ```hcl
+  {{ include "examples/docs/main.tf" }}
+  ```
+
+output:
+  file: "README.md"
+  mode: inject
+  template: |-
+    [//]: # (BEGIN_TF_DOCS)
+    {{ .Content }}
+
+    [//]: # (END_TF_DOCS)
+
+sort:
+  enabled: true
+  by: name
+
+settings:
+  anchor: false
+  color: true
+  default: true
+  description: true
+  escape: true
+  html: true
+  indent: 2
+  lockfile: true
+  required: true
+  sensitive: true
+  type: true
