@@ -32,7 +32,7 @@ locals {
 }
 
 resource "github_repository" "this" {
-  for_each               = { for repo in local.repositories : repo.name => repo }
+  for_each = { for repo in local.repositories : repo.name => repo }
 
   allow_merge_commit     = try(each.value.allow_merge_commit, null)
   allow_rebase_merge     = try(each.value.allow_rebase_merge, null)
