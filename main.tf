@@ -14,8 +14,14 @@ provider "github" {
 }
 
 locals {
-  accesses = flatten([
+  repositories = flatten([
     for repo in var.repositories : [
+      merge(var.default_repository_config, repo)
+    ]
+  ])
+
+  accesses = flatten([
+    for repo in local.repositories : [
       for key, value in repo.access : {
         repo       = repo.name
         entity     = key
@@ -26,43 +32,45 @@ locals {
 }
 
 resource "github_repository" "this" {
-  for_each               = { for repo in var.repositories : repo.name => repo }
-  allow_merge_commit     = try(each.value.allow_merge_commit, var.default_repository_config.allow_merge_commit)
-  allow_rebase_merge     = try(each.value.allow_rebase_merge, var.default_repository_config.allow_rebase_merge)
-  allow_squash_merge     = try(each.value.allow_squash_merge, var.default_repository_config.allow_squash_merge)
-  auto_init              = try(each.value.auto_init, var.default_repository_config.auto_init)
-  delete_branch_on_merge = try(each.value.delete_branch_on_merge, var.default_repository_config.delete_branch_on_merge)
+  for_each               = { for repo in local.repositories : repo.name => repo }
+
+  allow_merge_commit     = try(each.value.allow_merge_commit, null)
+  allow_rebase_merge     = try(each.value.allow_rebase_merge, null)
+  allow_squash_merge     = try(each.value.allow_squash_merge, null)
+  auto_init              = try(each.value.auto_init, null)
+  delete_branch_on_merge = try(each.value.delete_branch_on_merge, null)
   description            = try(each.value.description, null)
-  has_downloads          = try(each.value.has_downloads, var.default_repository_config.has_downloads)
-  has_issues             = try(each.value.has_issues, var.default_repository_config.has_issues)
-  has_projects           = try(each.value.has_projects, var.default_repository_config.has_projects)
-  has_wiki               = try(each.value.has_wiki, var.default_repository_config.has_wiki)
+  has_downloads          = try(each.value.has_downloads, null)
+  has_issues             = try(each.value.has_issues, null)
+  has_projects           = try(each.value.has_projects, null)
+  has_wiki               = try(each.value.has_wiki, null)
   homepage_url           = try(each.value.homepage_url, null)
   license_template       = try(each.value.license_template, null)
   name                   = each.value.name
-  visibility             = try(each.value.visibility, var.default_repository_config.visibility)
-  vulnerability_alerts   = try(each.value.vulnerability_alerts, var.default_repository_config.vulnerability_alerts)
+  visibility             = try(each.value.visibility, null)
+  vulnerability_alerts   = try(each.value.vulnerability_alerts, null)
 }
 
 resource "github_branch_protection_v3" "this" {
   depends_on = [
-    resource.github_repository.this
+    github_repository.this
   ]
-  for_each   = { for repo in var.repositories : repo.name => repo if var.account_type == "organization" }
-  repository = each.value.name
-  branch     = try(each.value.protected_branch, var.default_repository_config.protected_branch)
-  required_pull_request_reviews {
-    required_approving_review_count = try(each.value.required_approving_review_count, var.default_repository_config.required_approving_review_count)
-  }
-  required_status_checks {
-    strict = try(each.value.required_status_checks_strict, null)
-    contexts = try(each.value.required_status_checks_contexts, null)
+  for_each = { for repo in local.repositories : repo.name => repo if lookup(repo, "branch_protection", false) != false ? true : false }
+
+  repository = each.key
+  branch     = each.value.branch_protection.protected_branch
+
+  dynamic "required_pull_request_reviews" {
+    for_each = try(each.value.branch_protection.required_approving_review_count, false) != false ? [1] : [0]
+    content {
+      required_approving_review_count = try(each.value.branch_protection.required_approving_review_count, null)
+    }
   }
 }
 
 resource "github_team_repository" "this" {
   depends_on = [
-    resource.github_repository.this
+    github_repository.this
   ]
   for_each = { for access in local.accesses : "${access.repo}_${access.entity}" => access }
 
