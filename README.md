@@ -54,7 +54,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | account | Account (individual user or organization) where the repositories will be created. | `string` | n/a | yes |
 | account\_type | Type of Github account. | `string` | `"user"` | no |
-| default\_repository\_config | The default configuration to be applied to all repositories. Any value here can be overwritten from a repository definition in 'repositories' variable. | `map(string)` | <pre>{<br>  "allow_merge_commit": false,<br>  "allow_rebase_merge": false,<br>  "allow_squash_merge": true,<br>  "auto_init": false,<br>  "delete_branch_on_merge": true,<br>  "has_downloads": false,<br>  "has_issues": false,<br>  "has_projects": false,<br>  "has_wiki": false,<br>  "protected_branch": "main",<br>  "required_approving_review_count": 1,<br>  "visibility": "private",<br>  "vulnerability_alerts": true<br>}</pre> | no |
+| default\_repository\_config | The default configuration to be applied to all repositories. | `any` | <pre>{<br>  "allow_merge_commit": false,<br>  "allow_rebase_merge": false,<br>  "allow_squash_merge": true,<br>  "auto_init": false,<br>  "delete_branch_on_merge": true,<br>  "has_downloads": false,<br>  "has_issues": false,<br>  "has_projects": false,<br>  "has_wiki": false,<br>  "protection": {<br>    "protected_branch": "main"<br>  },<br>  "visibility": "private",<br>  "vulnerability_alerts": true<br>}</pre> | no |
 | repositories | List of objects containing the repository definitions. Parameter 'name' is mandatory. | `any` | n/a | yes |
 
 ## Outputs
@@ -89,26 +89,40 @@ module "github_repo" {
   source = "../../"
 
   account = "myOrg"
+  default_repository_config = {
+    allow_merge_commit     = false
+    allow_rebase_merge     = false
+    allow_squash_merge     = true
+    auto_init              = false
+    delete_branch_on_merge = true
+    has_downloads          = false
+    has_issues             = false
+    has_projects           = false
+    has_wiki               = false
+    visibility             = "private"
+    vulnerability_alerts   = true
+    protection = {
+      protected_branch = "main"
+    }
+  }
   repository_definitions = [
     {
-      name        = "foo"
-      description = "Repo for the foo project"
+      name                 = "foo"
+      description          = "Repo for the foo project"
+      vulnerability_alerts = false
       access = {
         "team1" = "admin"
         "user1" = "pull"
+      },
+      protection = {
+        protected_branch = "master"
       }
-    }, {
+      }, {
       name        = "bar"
       description = "Repo for the bar project."
       access = {
         "team1" = "pull"
         "user1" = "admin"
-      }, {
-        name        = "another-repo"
-        description = "Another repo." // If access is not declared, the user who runs terraform will be set as admin.
-      }, {
-        name        = "another-repo"
-        description = "Another repo."
       }
     }
   ]
