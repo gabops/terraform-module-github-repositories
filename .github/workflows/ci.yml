@@ -14,10 +14,10 @@ jobs:
       TF_DOCS_EXTRA_ARGS: --output-check
       TF_DOCS_OUTPUT_FILE: README.md
       TF_DOCS_WORKING_DIR: .
-      TF_VERSION: v1.0.6
+      TF_VERSION: v1.3.1
     steps:
       - name: Check commit message
-        uses: gsactions/commit-message-checker@v1
+        uses: gsactions/commit-message-checker@v1.0.1
         with:
           pattern: '^(((feat|fix|docs|style|refactor|perf|test|build|ci|chore|license|revert|bump|make|localize|skip\ ci)(\([a-z ]+\)|\([A-Z]{1,5}[-]{1}[0-9]{1,6}\))?))(!)?[\:][\ ](([a-zA-Z]{1,100}.{0,255}))$'
           flags: 'gm'
