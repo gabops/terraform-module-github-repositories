@@ -10,14 +10,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      TF_VERSION: v1.3.1
       TF_DOCS_CONFIG_FILE: .terraform-docs.yml
       TF_DOCS_EXTRA_ARGS: --output-check
       TF_DOCS_OUTPUT_FILE: README.md
       TF_DOCS_WORKING_DIR: .
-      TF_VERSION: v1.0.6
     steps:
       - name: Check commit message
-        uses: gsactions/commit-message-checker@v1
+        uses: gsactions/commit-message-checker@v1.0.1
         with:
           pattern: '^(((feat|fix|docs|style|refactor|perf|test|build|ci|chore|license|revert|bump|make|localize|skip\ ci)(\([a-z ]+\)|\([A-Z]{1,5}[-]{1}[0-9]{1,6}\))?))(!)?[\:][\ ](([a-zA-Z]{1,100}.{0,255}))$'
           flags: 'gm'
@@ -29,10 +29,10 @@ jobs:
             right before the colon or specify a footer with the format 'BREAKING CHANGE: summary'.
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2.0.2
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
@@ -67,7 +67,7 @@ jobs:
         run: make validate
 
       - name: Terraform docs
-        uses: terraform-docs/gh-actions@v0.10.0
+        uses: terraform-docs/gh-actions@v1.0.0
         id: docs
         with:
           args: ${{ env.TF_DOCS_EXTRA_ARGS }}
@@ -82,14 +82,14 @@ jobs:
     steps:
       - name: Create tag
         id: create_tag
-        uses: mathieudutour/github-tag-action@v5.6
+        uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: false
           tag_prefix: ''
 
       - name: Create initial release
-        uses: softprops/action-gh-release@v0.1.12
+        uses: softprops/action-gh-release@v0.1.14
         if: ${{ steps.create_tag.outputs.previous_version == '0.0.0' }}
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
@@ -98,7 +98,7 @@ jobs:
           body: ${{ steps.create_tag.outputs.changelog }}
 
       - name: Create release
-        uses: softprops/action-gh-release@v0.1.12
+        uses: softprops/action-gh-release@v0.1.14
         if: ${{ steps.create_tag.outputs.new_tag }}
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"

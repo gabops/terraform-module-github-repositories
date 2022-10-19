@@ -5,7 +5,7 @@ init: ## Initializates working directory.
 	@terraform init
 
 fmt: ## Rewrites config to canonical format.
-	@terraform fmt
+	@terraform fmt -recursive
 
 lint: ## Lints the HCL code.
 	@terraform fmt -diff=true -check
