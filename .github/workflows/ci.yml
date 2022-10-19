@@ -10,10 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      TF_DOCS_CONFIG_FILE: .terraform-docs.yml
-      TF_DOCS_EXTRA_ARGS: --output-check
-      TF_DOCS_OUTPUT_FILE: README.md
-      TF_DOCS_WORKING_DIR: .
       TF_VERSION: v1.3.1
     steps:
       - name: Check commit message
@@ -70,10 +66,7 @@ jobs:
         uses: terraform-docs/gh-actions@v1.0.0
         id: docs
         with:
-          args: ${{ env.TF_DOCS_EXTRA_ARGS }}
-          config-file: ${{ env.TF_DOCS_CONFIG_FILE }}
-          output-file: ${{ env.TF_DOCS_OUTPUT_FILE }}
-          working-dir: ${{ env.TF_DOCS_WORKING_DIR }}
+          fail-on-diff: true
 
   release:
     runs-on: ubuntu-latest
