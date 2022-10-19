@@ -80,7 +80,6 @@ be declared anywhere else other than in this file!
 ## Development
 
 - This project uses [Semantic Versioning](https://semver.org/).
-- After cloning this repo and moving into it, you must run `make hook` in order to install the git hooks.
 
 ## Examples
 
