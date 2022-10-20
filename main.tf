@@ -20,6 +20,15 @@ locals {
     ]
   ])
 
+  protections = flatten([
+    for repo in local.repositories : [
+      for rule in try(repo.branch_protection_rules, []) : {
+        repo    = repo.name
+        pattern = rule.branch_name_pattern
+      }
+    ]
+  ])
+
   accesses = flatten([
     for repo in local.repositories : [
       for key, value in repo.access : {
@@ -51,21 +60,14 @@ resource "github_repository" "this" {
   vulnerability_alerts   = try(each.value.vulnerability_alerts, null)
 }
 
-resource "github_branch_protection_v3" "this" {
+resource "github_branch_protection" "this" {
   depends_on = [
     github_repository.this
   ]
-  for_each = { for repo in local.repositories : repo.name => repo if lookup(repo, "branch_protection", false) != false ? true : false }
+  for_each = { for protection in local.protections : "${protection.repo}_${protection.pattern}" => protection }
 
-  repository = each.key
-  branch     = each.value.branch_protection.protected_branch
-
-  dynamic "required_pull_request_reviews" {
-    for_each = try(each.value.branch_protection.required_approving_review_count, false) != false ? [1] : [0]
-    content {
-      required_approving_review_count = try(each.value.branch_protection.required_approving_review_count, null)
-    }
-  }
+  repository_id = each.value.repo
+  pattern       = each.value.pattern
 }
 
 resource "github_team_repository" "this" {
