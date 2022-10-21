@@ -23,11 +23,12 @@ locals {
   protections = flatten([
     for repo in local.repositories : [
       for rule in try(repo.branch_protection_rules, []) : {
-        repo                    = repo.name
-        pattern                 = rule.branch_name_pattern
-        enforce_admins          = try(rule.enforce_admins, false)
-        require_signed_commits  = try(rule.require_signed_commits, false)
-        required_linear_history = try(rule.required_linear_history, false)
+        repo                            = repo.name
+        pattern                         = rule.branch_name_pattern
+        enforce_admins                  = try(rule.enforce_admins, false)
+        require_signed_commits          = try(rule.require_signed_commits, false)
+        required_linear_history         = try(rule.required_linear_history, false)
+        require_conversation_resolution = try(rule.require_conversation_resolution, false)
       }
     ]
   ])
@@ -69,11 +70,12 @@ resource "github_branch_protection" "this" {
   ]
   for_each = { for protection in local.protections : "${protection.repo}_${protection.pattern}" => protection }
 
-  repository_id           = each.value.repo
-  pattern                 = each.value.pattern
-  enforce_admins          = each.value.enforce_admins
-  require_signed_commits  = each.value.require_signed_commits
-  required_linear_history = each.value.required_linear_history
+  repository_id                   = each.value.repo
+  pattern                         = each.value.pattern
+  enforce_admins                  = each.value.enforce_admins
+  require_signed_commits          = each.value.require_signed_commits
+  required_linear_history         = each.value.required_linear_history
+  require_conversation_resolution = each.value.require_conversation_resolution
 }
 
 resource "github_team_repository" "this" {
