@@ -29,9 +29,12 @@ module "github_repo" {
         "team1" = "admin"
         "user1" = "pull"
       },
-      protection = {
-        protected_branch = "master"
-      }
+      branch_protection_rules = [
+        {
+          branch_name_pattern = "master"
+          allow_force_pushes  = true
+        }
+      ]
       }, {
       name        = "bar"
       description = "Repo for the bar project."
