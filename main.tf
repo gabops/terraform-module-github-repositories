@@ -32,6 +32,8 @@ locals {
         allows_deletions                = try(rule.allows_deletions, false)
         allows_force_pushes             = try(rule.allows_force_pushes, false)
         blocks_creations                = try(rule.blocks_creations, false)
+        required_status_checks          = try(rule.required_status_checks, {})
+        required_pull_request_reviews   = try(rule.required_pull_request_reviews, {})
       }
     ]
   ])
@@ -82,6 +84,27 @@ resource "github_branch_protection" "this" {
   allows_deletions                = each.value.allows_deletions
   allows_force_pushes             = each.value.allows_force_pushes
   blocks_creations                = each.value.blocks_creations
+
+  dynamic "required_status_checks" {
+    for_each = each.value.required_status_checks != {} ? [1] : []
+    content {
+      strict   = try(each.value.required_status_checks.strict, null)
+      contexts = try(each.value.required_status_checks.contexts, null)
+    }
+  }
+
+  dynamic "required_pull_request_reviews" {
+    for_each = each.value.required_pull_request_reviews != {} ? [1] : []
+
+    content {
+      dismiss_stale_reviews           = try(each.value.required_pull_request_reviews.dismiss_stale_reviews, null)
+      restrict_dismissals             = try(each.value.required_pull_request_reviews.dismiss_stale_reviews, null)
+      dismissal_restrictions          = try(each.value.required_pull_request_reviews.dismissal_restrictions, [])
+      pull_request_bypassers          = try(each.value.required_pull_request_reviews.pull_request_bypassers, [])
+      require_code_owner_reviews      = try(each.value.required_pull_request_reviews.require_code_owner_reviews, null)
+      required_approving_review_count = try(each.value.required_pull_request_reviews.required_approving_review_count, null)
+    }
+  }
 }
 
 resource "github_team_repository" "this" {

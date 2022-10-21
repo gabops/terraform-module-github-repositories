@@ -42,6 +42,12 @@ module "github_repo" {
         "team1" = "pull"
         "user1" = "admin"
       }
+      branch_protection_rules = {
+        branch_name_pattern = "main"
+        required_pull_request_reviews = {
+          required_approving_review_count = 2
+        }
+      }
     }
   ]
 }
