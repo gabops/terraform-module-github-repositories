@@ -32,6 +32,7 @@ locals {
         allows_deletions                = try(rule.allows_deletions, false)
         allows_force_pushes             = try(rule.allows_force_pushes, false)
         blocks_creations                = try(rule.blocks_creations, false)
+        required_status_checks          = try(rule.required_status_checks, {})
       }
     ]
   ])
@@ -82,6 +83,15 @@ resource "github_branch_protection" "this" {
   allows_deletions                = each.value.allows_deletions
   allows_force_pushes             = each.value.allows_force_pushes
   blocks_creations                = each.value.blocks_creations
+
+  dynamic "required_status_checks" {
+
+    for_each = each.value.required_status_checks != {} ? [1] : []
+    content {
+      strict   = try(each.value.required_status_checks.strict, null)
+      contexts = try(each.value.required_status_checks.contexts, null)
+    }
+  }
 }
 
 resource "github_team_repository" "this" {
