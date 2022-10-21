@@ -100,9 +100,11 @@ module "github_repo" {
     has_wiki               = false
     visibility             = "private"
     vulnerability_alerts   = true
-    protection = {
-      protected_branch = "main"
-    }
+    branch_protection_rules = [
+      {
+        branch_name_pattern = "main"
+      }
+    ]
   }
   repository_definitions = [
     {
