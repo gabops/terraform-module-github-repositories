@@ -4,14 +4,13 @@ Terraform module for managing Github repositories.
 
 ## Content
 
-`tree -a -I .git .`
+<!-- tree -a -I .git .` -->
 
 ```text
 .
 ├── .github                      # Github configuration directory
-│   ├── pull_request_template.md # pull request template markdown file
 │   └── workflows                # Github Actions configuration
-│       └── ci.yml               # CI pipeline configuration 
+│       └── ci.yml               # CI pipeline configuration
 ├── .gitignore                   # git ignore file
 ├── .terraform-docs.yml          # terraform-docs configuration
 ├── .terraform.lock.hcl          # terraform lock file
