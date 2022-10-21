@@ -30,6 +30,7 @@ locals {
         required_linear_history         = try(rule.required_linear_history, false)
         require_conversation_resolution = try(rule.require_conversation_resolution, false)
         allows_deletions                = try(rule.allows_deletions, false)
+        allows_force_pushes             = try(rule.allows_force_pushes, false)
       }
     ]
   ])
@@ -78,6 +79,7 @@ resource "github_branch_protection" "this" {
   required_linear_history         = each.value.required_linear_history
   require_conversation_resolution = each.value.require_conversation_resolution
   allows_deletions                = each.value.allows_deletions
+  allows_force_pushes             = each.value.allows_force_pushes
 }
 
 resource "github_team_repository" "this" {
