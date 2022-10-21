@@ -20,7 +20,7 @@ module "github_repo" {
       }
     ]
   }
-  repository_definitions = [
+  repositories = [
     {
       name                 = "foo"
       description          = "Repo for the foo project"
