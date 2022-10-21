@@ -29,6 +29,7 @@ locals {
         require_signed_commits          = try(rule.require_signed_commits, false)
         required_linear_history         = try(rule.required_linear_history, false)
         require_conversation_resolution = try(rule.require_conversation_resolution, false)
+        allows_deletions                = try(rule.allows_deletions, false)
       }
     ]
   ])
@@ -76,6 +77,7 @@ resource "github_branch_protection" "this" {
   require_signed_commits          = each.value.require_signed_commits
   required_linear_history         = each.value.required_linear_history
   require_conversation_resolution = each.value.require_conversation_resolution
+  allows_deletions                = each.value.allows_deletions
 }
 
 resource "github_team_repository" "this" {
