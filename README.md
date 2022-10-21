@@ -70,12 +70,6 @@ No modules.
 | terraform | ~> 1.0 |
 | github | ~> 5.0 |
 
-## Values
-
-Configuration passed to modules and resources is declared in the file [values.tfvars](./values.tfvars). This file
-**must be** treated as the source of truth for the configuration of the infrastructure. Configuration values **must not**
-be declared anywhere else other than in this file!
-
 ## Development
 
 - This project uses [Semantic Versioning](https://semver.org/).
