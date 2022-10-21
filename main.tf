@@ -23,8 +23,9 @@ locals {
   protections = flatten([
     for repo in local.repositories : [
       for rule in try(repo.branch_protection_rules, []) : {
-        repo    = repo.name
-        pattern = rule.branch_name_pattern
+        repo           = repo.name
+        pattern        = rule.branch_name_pattern
+        enforce_admins = try(rule.enforce_admins, false)
       }
     ]
   ])
@@ -66,8 +67,9 @@ resource "github_branch_protection" "this" {
   ]
   for_each = { for protection in local.protections : "${protection.repo}_${protection.pattern}" => protection }
 
-  repository_id = each.value.repo
-  pattern       = each.value.pattern
+  repository_id  = each.value.repo
+  pattern        = each.value.pattern
+  enforce_admins = each.value.enforce_admins
 }
 
 resource "github_team_repository" "this" {
