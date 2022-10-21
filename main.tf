@@ -31,6 +31,7 @@ locals {
         require_conversation_resolution = try(rule.require_conversation_resolution, false)
         allows_deletions                = try(rule.allows_deletions, false)
         allows_force_pushes             = try(rule.allows_force_pushes, false)
+        blocks_creations                = try(rule.blocks_creations, false)
       }
     ]
   ])
@@ -80,6 +81,7 @@ resource "github_branch_protection" "this" {
   require_conversation_resolution = each.value.require_conversation_resolution
   allows_deletions                = each.value.allows_deletions
   allows_force_pushes             = each.value.allows_force_pushes
+  blocks_creations                = each.value.blocks_creations
 }
 
 resource "github_team_repository" "this" {
