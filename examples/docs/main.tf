@@ -49,7 +49,7 @@ module "github_repo" {
           encrypted_value = var.secret_token_value
         }
       ]
-    }, {
+      }, {
       name        = "bar"
       description = "Repo for the bar project."
       access = {
