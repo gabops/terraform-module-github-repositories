@@ -111,7 +111,7 @@ module "github_repo" {
   repositories = [
     {
       name                 = "foo"
-      description          = "Repo for the foo project"
+      description          = "Repo for the foo project."
       vulnerability_alerts = false
       access = {
         "team1" = "admin"
@@ -130,7 +130,6 @@ module "github_repo" {
           encrypted_value = var.secret_token_value
         }
       ]
-
     }, {
       name        = "bar"
       description = "Repo for the bar project."
