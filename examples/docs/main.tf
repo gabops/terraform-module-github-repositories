@@ -19,6 +19,13 @@ module "github_repo" {
         branch_name_pattern = "main"
       }
     ]
+    webhooks = [
+      {
+        active = true
+        events = ["push", "pull_request"]
+        url    = "https://ci-1.contoso.com"
+      }
+    ]
   }
   repositories = [
     {
@@ -42,12 +49,28 @@ module "github_repo" {
         "team1" = "pull"
         "user1" = "admin"
       }
-      branch_protection_rules = {
-        branch_name_pattern = "main"
-        required_pull_request_reviews = {
-          required_approving_review_count = 2
+      branch_protection_rules = [
+        {
+          branch_name_pattern = "main"
+          required_pull_request_reviews = {
+            required_approving_review_count = 2
+          }
         }
-      }
+      ]
+      webhooks = [
+        {
+          active       = true
+          events       = ["pull_request"]
+          insecure_ssl = true
+          url          = "https://ci-2.contoso.com"
+        },
+        {
+          active       = false
+          events       = ["issues"]
+          insecure_ssl = true
+          url          = "https://ci-3.contoso.com"
+        }
+      ]
     }
   ]
 }

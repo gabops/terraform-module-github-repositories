@@ -47,6 +47,19 @@ locals {
       }
     ] if length(try(repo.access, {})) > 0
   ])
+
+  webhooks = flatten([
+    for repo in local.repositories : [
+      for webhook in try(repo.webhooks, []) : {
+        repo         = repo.name
+        active       = try(webhook.active, null)
+        events       = webhook.events
+        url          = webhook.url
+        content_type = webhook.content_type
+        insecure_ssl = try(webhook.insecure_ssl, null)
+      }
+    ]
+  ])
 }
 
 resource "github_repository" "this" {
@@ -116,4 +129,21 @@ resource "github_team_repository" "this" {
   repository = each.value.repo
   team_id    = each.value.entity
   permission = each.value.permission
+}
+
+resource "github_repository_webhook" "this" {
+  depends_on = [
+    github_repository.this
+  ]
+  for_each = { for webhook in local.webhooks : "${webhook.repo}_${webhook.url}" => webhook }
+
+  repository = each.value.repo
+  active     = each.value.active
+  events     = each.value.events
+
+  configuration {
+    url          = each.value.url
+    content_type = each.value.content_type
+    insecure_ssl = each.value.insecure_ssl
+  }
 }
