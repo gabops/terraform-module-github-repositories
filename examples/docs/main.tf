@@ -30,7 +30,7 @@ module "github_repo" {
   repositories = [
     {
       name                 = "foo"
-      description          = "Repo for the foo project"
+      description          = "Repo for the foo project."
       vulnerability_alerts = false
       access = {
         "team1" = "admin"
@@ -42,7 +42,14 @@ module "github_repo" {
           allow_force_pushes  = true
         }
       ]
-      }, {
+
+      actions_repository_secrets = [
+        {
+          secret_name     = "TOKEN"
+          encrypted_value = var.secret_token_value
+        }
+      ]
+    }, {
       name        = "bar"
       description = "Repo for the bar project."
       access = {

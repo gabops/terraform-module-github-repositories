@@ -60,6 +60,17 @@ locals {
       }
     ]
   ])
+
+  actions_repository_secrets = flatten([
+    for repo in local.repositories : [
+      for secret in try(repo.actions_repository_secrets, []) : {
+        repo            = repo.name
+        secret_name     = secret.secret_name
+        encrypted_value = try(secret.encrypted_value, null)
+        plaintext_value = try(secret.plaintext_value, null)
+      }
+    ]
+  ])
 }
 
 resource "github_repository" "this" {
@@ -146,4 +157,16 @@ resource "github_repository_webhook" "this" {
     content_type = each.value.content_type
     insecure_ssl = each.value.insecure_ssl
   }
+}
+
+resource "github_actions_secret" "this" {
+  depends_on = [
+    github_repository.this
+  ]
+  for_each = { for secret in local.actions_repository_secrets : "${secret.repo}_${secret.secret_name}" => secret }
+
+  repository      = each.value.repo
+  secret_name     = each.value.secret_name
+  encrypted_value = each.value.encrypted_value
+  plaintext_value = each.value.plaintext_value
 }

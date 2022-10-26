@@ -39,6 +39,7 @@ Terraform module for managing Github repositories.
 
 | Name | Type |
 |------|------|
+| [github_actions_secret.this](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
 | [github_branch_protection.this](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection) | resource |
 | [github_repository.this](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository) | resource |
 | [github_repository_webhook.this](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_webhook) | resource |
@@ -122,7 +123,15 @@ module "github_repo" {
           allow_force_pushes  = true
         }
       ]
-      }, {
+
+      actions_repository_secrets = [
+        {
+          secret_name     = "TOKEN"
+          encrypted_value = var.secret_token_value
+        }
+      ]
+
+    }, {
       name        = "bar"
       description = "Repo for the bar project."
       access = {
