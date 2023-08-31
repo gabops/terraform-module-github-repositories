@@ -33,7 +33,7 @@ Terraform module for managing Github repositories.
 
 | Name | Version |
 |------|---------|
-| github | 5.5.0 |
+| github | 5.34.0 |
 
 ## Resources
 
@@ -71,7 +71,7 @@ No modules.
 | Name | Version |
 |------|---------|
 | terraform | ~> 1.0 |
-| github | ~> 5.34.0 |
+| github | ~> 5.34 |
 
 ## Development
 
