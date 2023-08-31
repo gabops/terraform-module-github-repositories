@@ -76,27 +76,27 @@ locals {
 resource "github_repository" "this" {
   for_each = { for repo in local.repositories : repo.name => repo }
 
-  allow_merge_commit     = try(each.value.allow_merge_commit, null)
-  allow_rebase_merge     = try(each.value.allow_rebase_merge, null)
-  allow_squash_merge     = try(each.value.allow_squash_merge, null)
-  allow_update_branch    = try(each.value.allow_update_branch, true)
-  auto_init              = try(each.value.auto_init, null)
-  delete_branch_on_merge = try(each.value.delete_branch_on_merge, null)
-  description            = try(each.value.description, null)
-  has_downloads          = try(each.value.has_downloads, null)
-  has_issues             = try(each.value.has_issues, null)
-  has_projects           = try(each.value.has_projects, null)
-  has_wiki               = try(each.value.has_wiki, null)
-  homepage_url           = try(each.value.homepage_url, null)
-  license_template       = try(each.value.license_template, null)
-  merge_commit_message   = try(each.value.merge_commit_message, null)
-  merge_commit_title     = try(each.value.merge_commit_title, null)
-  name                   = each.value.name
+  allow_merge_commit          = try(each.value.allow_merge_commit, null)
+  allow_rebase_merge          = try(each.value.allow_rebase_merge, null)
+  allow_squash_merge          = try(each.value.allow_squash_merge, null)
+  allow_update_branch         = try(each.value.allow_update_branch, true)
+  auto_init                   = try(each.value.auto_init, null)
+  delete_branch_on_merge      = try(each.value.delete_branch_on_merge, null)
+  description                 = try(each.value.description, null)
+  has_downloads               = try(each.value.has_downloads, null)
+  has_issues                  = try(each.value.has_issues, null)
+  has_projects                = try(each.value.has_projects, null)
+  has_wiki                    = try(each.value.has_wiki, null)
+  homepage_url                = try(each.value.homepage_url, null)
+  license_template            = try(each.value.license_template, null)
+  merge_commit_message        = try(each.value.merge_commit_message, null)
+  merge_commit_title          = try(each.value.merge_commit_title, null)
+  name                        = each.value.name
   squash_merge_commit_message = try(each.value.squash_merge_commit_message, null)
   squash_merge_commit_title   = try(each.value.squash_merge_commit_title, null)
   topics                      = try(each.value.topics, [])
-  visibility             = try(each.value.visibility, null)
-  vulnerability_alerts   = try(each.value.vulnerability_alerts, null)
+  visibility                  = try(each.value.visibility, null)
+  vulnerability_alerts        = try(each.value.vulnerability_alerts, null)
 
   dynamic "template" {
     for_each = try(each.value.template, {}) != {} ? [1] : []
@@ -144,6 +144,7 @@ resource "github_branch_protection" "this" {
       pull_request_bypassers          = try(each.value.required_pull_request_reviews.pull_request_bypassers, [])
       require_code_owner_reviews      = try(each.value.required_pull_request_reviews.require_code_owner_reviews, null)
       required_approving_review_count = try(each.value.required_pull_request_reviews.required_approving_review_count, null)
+      require_last_push_approval      = try(each.value.required_pull_request_reviews.require_last_push_approval, null)
     }
   }
 }
