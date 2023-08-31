@@ -62,6 +62,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| http\_clone\_urls | HTTP urls for cloning the repositories. |
 | repository\_names | Names of the repositories. |
 | ssh\_clone\_urls | SSH urls for cloning the repositories. |
 
