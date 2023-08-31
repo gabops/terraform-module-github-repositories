@@ -71,7 +71,7 @@ No modules.
 | Name | Version |
 |------|---------|
 | terraform | ~> 1.0 |
-| github | ~> 5.0 |
+| github | ~> 5.34.0 |
 
 ## Development
 
