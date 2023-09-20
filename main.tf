@@ -34,6 +34,7 @@ locals {
         blocks_creations                = try(rule.blocks_creations, false)
         required_status_checks          = try(rule.required_status_checks, {})
         required_pull_request_reviews   = try(rule.required_pull_request_reviews, {})
+        push_restrictions               = try(rule.push_restrictions, [])
       }
     ]
   ])
