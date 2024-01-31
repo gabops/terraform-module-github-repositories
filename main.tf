@@ -78,6 +78,7 @@ resource "github_repository" "this" {
   for_each = { for repo in local.repositories : repo.name => repo }
 
   allow_merge_commit          = try(each.value.allow_merge_commit, null)
+  archived                    = try(each.value.archived, null)
   allow_rebase_merge          = try(each.value.allow_rebase_merge, null)
   allow_squash_merge          = try(each.value.allow_squash_merge, null)
   allow_update_branch         = try(each.value.allow_update_branch, true)
@@ -126,11 +127,12 @@ resource "github_branch_protection" "this" {
   allows_deletions                = each.value.allows_deletions
   allows_force_pushes             = each.value.allows_force_pushes
   blocks_creations                = each.value.blocks_creations
+  push_restrictions               = each.value.push_restrictions
 
   dynamic "required_status_checks" {
     for_each = each.value.required_status_checks != {} ? [1] : []
     content {
-      strict   = try(each.value.required_status_checks.strict, null)
+      strict   = try(each.value.required_status_checks.strict, false)
       contexts = try(each.value.required_status_checks.contexts, null)
     }
   }
